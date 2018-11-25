@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:awareframework_pedometer/awareframework_pedometer.dart';
-import 'package:awareframework_core/awareframework_core.dart';
 
 void main() => runApp(new MyApp());
 
@@ -22,9 +19,12 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     config = PedometerSensorConfig()
+      ..interval = 1
       ..debug = true;
 
     sensor = new PedometerSensor(config);
+
+    sensor.start();
 
   }
 

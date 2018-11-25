@@ -30,12 +30,9 @@ public class SwiftAwareframeworkPedometerPlugin: AwareFlutterPluginCore, Flutter
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        // add own channel
-        super.setChannels(with: registrar,
-                          instance: SwiftAwareframeworkPedometerPlugin(),
-                          methodChannelName: "awareframework_pedometer/method",
-                          eventChannelName: "awareframework_pedometer/event")
-
+        let instance = SwiftAwareframeworkPedometerPlugin()
+        super.setMethodChannel(with: registrar, instance: instance, channelName: "awareframework_pedometer/method")
+        super.setEventChannels(with: registrar, instance: instance, channelNames: ["awareframework_pedometer/event"])
     }
 
 

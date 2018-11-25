@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:awareframework_core/awareframework_core.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 /// init sensor
 class PedometerSensor extends AwareSensorCore {
@@ -13,20 +12,19 @@ class PedometerSensor extends AwareSensorCore {
   /// Init Pedometer Sensor with PedometerSensorConfig
   PedometerSensor(PedometerSensorConfig config):this.convenience(config);
   PedometerSensor.convenience(config) : super(config){
-    /// Set sensor method & event channels
-    super.setSensorChannels(_pedometerMethod, _pedometerStream);
+    super.setMethodChannel(_pedometerMethod);
   }
 
   /// A sensor observer instance
-  Stream<Map<String,dynamic>> get onDataChanged {
-     return super.receiveBroadcastStream("on_data_changed").map((dynamic event) => Map<String,dynamic>.from(event));
+  Stream<Map<String,dynamic>> onDataChanged (String id) {
+     return super.getBroadcastStream(_pedometerStream,"on_data_changed", id).map((dynamic event) => Map<String,dynamic>.from(event));
   }
 }
 
 class PedometerSensorConfig extends AwareSensorConfig{
-  PedometerSensorConfig();
+  PedometerSensorConfig({Key key, this.interval = 10});
 
-  /// TODO
+  int interval;
 
   @override
   Map<String, dynamic> toMap() {
@@ -37,9 +35,10 @@ class PedometerSensorConfig extends AwareSensorConfig{
 
 /// Make an AwareWidget
 class PedometerCard extends StatefulWidget {
-  PedometerCard({Key key, @required this.sensor}) : super(key: key);
+  PedometerCard({Key key, @required this.sensor, this.cardId = "pedometer_card"}) : super(key: key);
 
   PedometerSensor sensor;
+  String cardId;
 
   @override
   PedometerCardState createState() => new PedometerCardState();
@@ -55,7 +54,7 @@ class PedometerCardState extends State<PedometerCard> {
 
     super.initState();
     // set observer
-    widget.sensor.onDataChanged.listen((event) {
+    widget.sensor.onDataChanged(widget.cardId).listen((event) {
       setState((){
         if(event!=null){
           DateTime.fromMicrosecondsSinceEpoch(event['timestamp']);
@@ -79,6 +78,13 @@ class PedometerCardState extends State<PedometerCard> {
       title: "Pedometer",
       sensor: widget.sensor
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    widget.sensor.cancelBroadcastStream(widget.cardId);
+    super.dispose();
   }
 
 }
