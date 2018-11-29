@@ -16,8 +16,13 @@ class PedometerSensor extends AwareSensorCore {
   }
 
   /// A sensor observer instance
-  Stream<Map<String,dynamic>> onDataChanged (String id) {
-     return super.getBroadcastStream(_pedometerStream,"on_data_changed", id).map((dynamic event) => Map<String,dynamic>.from(event));
+  Stream<Map<String,dynamic>> get onDataChanged{
+     return super.getBroadcastStream(_pedometerStream,"on_data_changed").map((dynamic event) => Map<String,dynamic>.from(event));
+  }
+
+  @override
+  void cancelAllEventChannels() {
+    super.cancelBroadcastStream("on_data_changed");
   }
 }
 
@@ -35,30 +40,29 @@ class PedometerSensorConfig extends AwareSensorConfig{
 
 /// Make an AwareWidget
 class PedometerCard extends StatefulWidget {
-  PedometerCard({Key key, @required this.sensor, this.cardId = "pedometer_card"}) : super(key: key);
+  PedometerCard({Key key, @required this.sensor}) : super(key: key);
 
-  PedometerSensor sensor;
-  String cardId;
+  final PedometerSensor sensor;
 
   @override
   PedometerCardState createState() => new PedometerCardState();
+
+  String steps = "Steps: ";
 }
 
 
 class PedometerCardState extends State<PedometerCard> {
-
-  String steps = "Steps: ";
 
   @override
   void initState() {
 
     super.initState();
     // set observer
-    widget.sensor.onDataChanged(widget.cardId).listen((event) {
+    widget.sensor.onDataChanged.listen((event) {
       setState((){
         if(event!=null){
           DateTime.fromMicrosecondsSinceEpoch(event['timestamp']);
-          steps = "Steps: ${event.toString()}";
+          widget.steps = "Steps: ${event.toString()}";
         }
       });
     }, onError: (dynamic error) {
@@ -73,7 +77,7 @@ class PedometerCardState extends State<PedometerCard> {
     return new AwareCard(
       contentWidget: SizedBox(
           width: MediaQuery.of(context).size.width*0.8,
-          child: new Text(steps),
+          child: new Text(widget.steps),
         ),
       title: "Pedometer",
       sensor: widget.sensor
@@ -82,8 +86,7 @@ class PedometerCardState extends State<PedometerCard> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    widget.sensor.cancelBroadcastStream(widget.cardId);
+    widget.sensor.cancelAllEventChannels();
     super.dispose();
   }
 
