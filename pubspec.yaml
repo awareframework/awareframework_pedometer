@@ -1,6 +1,6 @@
 name: awareframework_pedometer
-description: A new flutter plugin project.
-version: 0.0.3
+description: The Pedometer sensor allows us to manages historic pedometer data.
+version: 0.0.4
 author: AWARE Mobile Context Instrumentation Middleware Framework <yuuki.nishiyama@oulu.fi>
 homepage: http://www.awareframework.com
 
@@ -10,10 +10,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  awareframework_core: ^0.0.9
+  awareframework_core: ^0.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  test:
+
 
 # The following section is specific to Flutter.
 flutter:

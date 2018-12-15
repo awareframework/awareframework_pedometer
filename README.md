@@ -1,6 +1,8 @@
 # Aware Pedometer
 
-TODO
+[![Build Status](https://travis-ci.org/awareframework/awareframework_pedometer.svg?branch=master)](https://travis-ci.org/awareframework/awareframework_pedometer)
+
+The Pedometer sensor allows us to manages historic pedometer data.
 
 ## Install the plugin into project
 1. Edit `pubspec.yaml`
@@ -19,10 +21,11 @@ import 'package:awareframework_core/awareframework_core.dart';
 ### pedometer Sensor
 - `start()`
 - `stop()` 
-- `sync(force: Boolean)`
+- `sync(bool force)`
 - `enable()`
 - `disable()`
 - `isEnable()`
+- `setLabel(String label)`
 
 ### Configuration Keys
 TODO
@@ -50,14 +53,14 @@ var config = PedometerSensorConfig()
   ..label = "label";
 
 // init sensor
-var sensor = new PedometerSensor(config);
+var sensor = new PedometerSensor.init(config);
 
-void mathod(){
+void method(){
     /// start 
     sensor.start();
     
     /// set observer
-    sensor.onDataChanged.listen((Map<String,dynamic> result){
+    sensor.onDataChanged.listen((PedometerData result){
       setState((){
         // Your code here
       });

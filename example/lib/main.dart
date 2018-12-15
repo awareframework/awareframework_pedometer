@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
       ..interval = 1
       ..debug = true;
 
-    sensor = new PedometerSensor(config);
+    sensor = new PedometerSensor.init(config);
 
     sensor.start();
 
