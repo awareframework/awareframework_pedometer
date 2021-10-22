@@ -33,7 +33,6 @@ public class SwiftAwareframeworkPedometerPlugin: AwareFlutterPluginCore, Flutter
         super.setEventChannels(with: registrar, instance: instance, channelNames: ["awareframework_pedometer/event","awareframework_pedometer/event_on_data_changed"])
     }
 
-
     public func onPedometerChanged(data: PedometerData) {
         for handler in self.streamHandlers {
             if handler.eventName == "on_data_changed" {

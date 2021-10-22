@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:awareframework_core/awareframework_core.dart';
-import 'package:flutter/material.dart';
 
 /// The Pedometer measures the acceleration applied to the sensor
 /// built-in into the device, including the force of gravity.
@@ -54,14 +53,14 @@ class PedometerSensor extends AwareSensor {
 
   StreamController<PedometerData> onDataChangedStreamController = StreamController<PedometerData>();
 
-  PedometerData latestData = PedometerData();
+  PedometerData latestData = PedometerData({});
 
   /// Init Pedometer Sensor without a configuration file
   ///
   /// ```dart
   /// var sensor = PedometerSensor.init(null);
   /// ```
-  PedometerSensor():this.init(null);
+  // PedometerSensor():super(null);
 
   /// Init Pedometer Sensor with PedometerSensorConfig
   ///
@@ -96,7 +95,7 @@ class PedometerSensor extends AwareSensor {
   @override
   Future<Null> start() {
     super.getBroadcastStream( _onDataChangedStream, "on_data_changed").map(
-            (dynamic event) => PedometerData.from(Map<String,dynamic>.from(event))
+            (dynamic event) => PedometerData(Map<String,dynamic>.from(event))
     ).listen((event){
       latestData = event;
       if (!onDataChangedStreamController.isClosed){
@@ -125,7 +124,7 @@ class PedometerSensor extends AwareSensor {
 ///   ..frequency = 100;
 /// ```
 class PedometerSensorConfig extends AwareSensorConfig{
-  PedometerSensorConfig({Key key, this.interval = 10});
+  PedometerSensorConfig({this.interval = 10});
 
   int interval;
 
@@ -144,8 +143,6 @@ class PedometerSensorConfig extends AwareSensorConfig{
 ///
 class PedometerData extends AwareData {
 
-  Map<String,dynamic> source;
-
   int startDate= 0;
   int endDate  = 0;
   double frequencySpeed = 0.0;
@@ -157,9 +154,7 @@ class PedometerData extends AwareData {
   int floorsDescended   = 0;
   double averageActivePace = 0.0;
 
-  PedometerData():this.from(null);
-
-  PedometerData.from(Map<String,dynamic> data):super.from(data){
+  PedometerData(Map<String,dynamic>? data):super(data ?? {}){
     if (data != null) {
       startDate   = data["startDate"] ?? 0;
       endDate     = data["endDate"]   ?? 0;
@@ -182,63 +177,4 @@ class PedometerData extends AwareData {
     }
     return super.toString();
   }
-}
-
-///
-/// A Card Widget of Pedometer Sensor
-///
-/// You can generate a Cart Widget by following code.
-/// ```dart
-/// var card = PedometerCard(sensor: sensor);
-/// ```
-class PedometerCard extends StatefulWidget {
-  PedometerCard({Key key, @required this.sensor}) : super(key: key);
-
-  final PedometerSensor sensor;
-
-  @override
-  PedometerCardState createState() => new PedometerCardState();
-
-}
-
-///
-/// A Card State of Pedometer Sensor
-///
-class PedometerCardState extends State<PedometerCard> {
-
-  String steps = "Steps: ";
-
-  @override
-  void initState() {
-
-    super.initState();
-    setState(() {
-      steps = "Steps: ${widget.sensor.latestData.toString()}";
-    });
-    // set observer
-    widget.sensor.onDataChanged.listen((event) {
-      setState((){
-        if(event!=null){
-          // DateTime.fromMicrosecondsSinceEpoch(event['timestamp']);
-          steps = "Steps: ${event.toString()}";
-        }
-      });
-    }, onError: (dynamic error) {
-        print('Received error: ${error.message}');
-    });
-    print(widget.sensor);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new AwareCard(
-      contentWidget: SizedBox(
-          width: MediaQuery.of(context).size.width*0.8,
-          child: new Text(steps),
-        ),
-      title: "Pedometer",
-      sensor: widget.sensor
-    );
-  }
-
 }

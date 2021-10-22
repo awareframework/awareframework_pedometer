@@ -17,6 +17,8 @@ import 'package:awareframework_pedometer/awareframework_pedometer.dart';
 import 'package:awareframework_core/awareframework_core.dart';
 ```
 
+3. Only iOS: Add `NSMotionUsageDescription` into `Info.plist`
+
 ## Public functions
 ### pedometer Sensor
 - `start()`
@@ -80,7 +82,7 @@ void method(){
 ```
 
 ## License
-Copyright (c) 2018 AWARE Mobile Context Instrumentation Middleware/Framework (http://www.awareframework.com)
+Copyright (c) 2021 AWARE Mobile Context Instrumentation Middleware/Framework (http://www.awareframework.com)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
