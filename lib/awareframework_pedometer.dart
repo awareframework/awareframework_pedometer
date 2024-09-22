@@ -46,12 +46,15 @@ import 'package:awareframework_core/awareframework_core.dart';
 /// var card = PedometerCard(sensor: sensor);
 /// ```
 class PedometerSensor extends AwareSensor {
-  static const MethodChannel _pedometerMethod = const MethodChannel('awareframework_pedometer/method');
+  static const MethodChannel _pedometerMethod =
+      const MethodChannel('awareframework_pedometer/method');
   // static const EventChannel  _pedometerStream  = const EventChannel('awareframework_pedometer/event');
 
-  static const EventChannel  _onDataChangedStream = const EventChannel('awareframework_pedometer/event_on_data_changed');
+  static const EventChannel _onDataChangedStream =
+      const EventChannel('awareframework_pedometer/event_on_data_changed');
 
-  StreamController<PedometerData> onDataChangedStreamController = StreamController<PedometerData>();
+  StreamController<PedometerData> onDataChangedStreamController =
+      StreamController<PedometerData>();
 
   PedometerData latestData = PedometerData({});
 
@@ -72,7 +75,7 @@ class PedometerSensor extends AwareSensor {
   ///
   /// var sensor = PedometerSensor.init(config);
   /// ```
-  PedometerSensor.init(PedometerSensorConfig config) : super(config){
+  PedometerSensor.init(PedometerSensorConfig config) : super(config) {
     super.setMethodChannel(_pedometerMethod);
   }
 
@@ -86,7 +89,7 @@ class PedometerSensor extends AwareSensor {
   ///   print(data)
   /// }
   ///
-  Stream<PedometerData> get onDataChanged{
+  Stream<PedometerData> get onDataChanged {
     onDataChangedStreamController.close();
     onDataChangedStreamController = StreamController<PedometerData>();
     return onDataChangedStreamController.stream;
@@ -94,11 +97,12 @@ class PedometerSensor extends AwareSensor {
 
   @override
   Future<Null> start() {
-    super.getBroadcastStream( _onDataChangedStream, "on_data_changed").map(
-            (dynamic event) => PedometerData(Map<String,dynamic>.from(event))
-    ).listen((event){
+    super
+        .getBroadcastStream(_onDataChangedStream, "on_data_changed")
+        .map((dynamic event) => PedometerData(Map<String, dynamic>.from(event)))
+        .listen((event) {
       latestData = event;
-      if (!onDataChangedStreamController.isClosed){
+      if (!onDataChangedStreamController.isClosed) {
         onDataChangedStreamController.add(event);
       }
     });
@@ -112,7 +116,6 @@ class PedometerSensor extends AwareSensor {
   }
 }
 
-
 /// A configuration class of PedometerSensor
 ///
 /// You can initialize the class by following code.
@@ -123,7 +126,7 @@ class PedometerSensor extends AwareSensor {
 ///   ..debug = true
 ///   ..frequency = 100;
 /// ```
-class PedometerSensorConfig extends AwareSensorConfig{
+class PedometerSensorConfig extends AwareSensorConfig {
   PedometerSensorConfig({this.interval = 10});
 
   int interval;
@@ -135,29 +138,27 @@ class PedometerSensorConfig extends AwareSensorConfig{
   }
 }
 
-
 /// A data model of PedometerSensor
 ///
 /// This class converts sensor data that is Map<String,dynamic> format, to a
 /// sensor data object.
 ///
 class PedometerData extends AwareData {
-
-  int startDate= 0;
-  int endDate  = 0;
+  int startDate = 0;
+  int endDate = 0;
   double frequencySpeed = 0.0;
-  int numberOfSteps     = 0;
-  double distance       = 0.0;
-  double currentPace    = 0.0;
+  int numberOfSteps = 0;
+  double distance = 0.0;
+  double currentPace = 0.0;
   double currentCadence = 0.0;
-  int floorsAscended    = 0;
-  int floorsDescended   = 0;
+  int floorsAscended = 0;
+  int floorsDescended = 0;
   double averageActivePace = 0.0;
 
-  PedometerData(Map<String,dynamic>? data):super(data ?? {}){
+  PedometerData(Map<String, dynamic>? data) : super(data ?? {}) {
     if (data != null) {
-      startDate   = data["startDate"] ?? 0;
-      endDate     = data["endDate"]   ?? 0;
+      startDate = data["startDate"] ?? 0;
+      endDate = data["endDate"] ?? 0;
       frequencySpeed = data["frequencySpeed"] ?? 0.0;
       numberOfSteps = data["numberOfSteps"] ?? 0;
       distance = data["distance"] ?? 0.0;
@@ -172,9 +173,6 @@ class PedometerData extends AwareData {
 
   @override
   String toString() {
-    if(source!=null){
-      return source.toString();
-    }
-    return super.toString();
+    return source.toString();
   }
 }
